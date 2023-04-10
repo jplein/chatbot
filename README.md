@@ -62,6 +62,8 @@ If you start a new shell, chatbot will have a new context.
 
 ## TODO
 
+There needs to be a better mechanism for storing the API key than hand-editing a JSON file.
+
 The engine is hard-coded to `chatgpt-3.5-turbo`. In the future, you'll be able to choose the engine.
 
 There is no mechanism to prevent storing the transcript, or resetting it for the current shell, other than finding the transcripts and deleting them.
