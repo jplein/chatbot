@@ -65,11 +65,21 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 		return "", err
 	}
 
+	var context []transcript.Record
+	if context, err = transcript.Read(dir, parentPID); err != nil {
+		return "", err
+	}
+
 	req.URL = uri
 
 	payload := ChatPayload{
 		Model: DefaultChatModel,
 	}
+
+	for _, record := range context {
+		payload.Messages = append(payload.Messages, record)
+	}
+
 	payload.Messages = append(
 		payload.Messages,
 		transcript.Record{

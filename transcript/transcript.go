@@ -30,6 +30,7 @@ type Record struct {
 
 func getTranscriptsDir(dir *storage.Dir, id int) string {
 	return filepath.Join(
+		dir.Path,
 		TranscriptsPath,
 		fmt.Sprintf("%d", id),
 	)
@@ -98,7 +99,7 @@ func Write(dir *storage.Dir, id int, r Record) error {
 		return err
 	}
 
-	f := filepath.Join(transcriptsDir, fmt.Sprintf("%d.json", t))
+	f := filepath.Join(transcriptsDir, fmt.Sprintf("%018d.json", t))
 
 	var buf []byte
 	if buf, err = json.Marshal(r); err != nil {
