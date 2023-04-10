@@ -9,6 +9,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jplein/chatbot/serialize"
 	"github.com/jplein/chatbot/storage"
 	"github.com/jplein/chatbot/transcript"
 )
@@ -18,37 +19,11 @@ const ChatEndpoint = "https://api.openai.com/v1/chat/completions"
 // const ChatEndpoint = "http://127.0.0.1:8080/"
 const DefaultChatModel = "gpt-3.5-turbo"
 
-type ChatPayload struct {
-	Model    string              `json:"model"`
-	Messages []transcript.Record `json:"messages"`
-}
-
-type ChatResponseUsage struct {
-	PromptTokens     int `json:"prompt_tokens"`
-	CompletionTokens int `json:"completion_tokens"`
-	TotalTokens      int `json:"total_tokens"`
-}
-
-type ChatResponseChoice struct {
-	Message      transcript.Record `json:"message"`
-	FinishReason string            `json:"finish_reason"`
-	Index        int               `json:"index"`
-}
-
-type ChatResponse struct {
-	ID      string               `json:"id"`
-	Object  string               `json:"object"`
-	Created int                  `json:"created"`
-	Model   string               `json:"model"`
-	Usage   ChatResponseUsage    `json:"usage"`
-	Choices []ChatResponseChoice `json:"choices"`
-}
-
 func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 	var err error
 	var parentPID int = os.Getppid()
 
-	question := transcript.Record{Role: transcript.User, Content: msg}
+	question := serialize.Record{Role: serialize.User, Content: msg}
 	if err = transcript.Write(dir, parentPID, question); err != nil {
 		return "", err
 	}
@@ -65,14 +40,14 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 		return "", err
 	}
 
-	var context []transcript.Record
+	var context []serialize.Record
 	if context, err = transcript.Read(dir, parentPID); err != nil {
 		return "", err
 	}
 
 	req.URL = uri
 
-	payload := ChatPayload{
+	payload := serialize.ChatPayload{
 		Model: DefaultChatModel,
 	}
 
@@ -82,8 +57,8 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 
 	payload.Messages = append(
 		payload.Messages,
-		transcript.Record{
-			Role:    transcript.User,
+		serialize.Record{
+			Role:    serialize.User,
 			Content: msg,
 		},
 	)
@@ -112,7 +87,7 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 		return "", fmt.Errorf("unexpected status code %d: %s", res.StatusCode, body)
 	}
 
-	var chatResponse ChatResponse
+	var chatResponse serialize.ChatResponse
 	if err = json.Unmarshal(body, &chatResponse); err != nil {
 		return "", err
 	}

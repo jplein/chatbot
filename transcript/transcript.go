@@ -8,25 +8,13 @@ import (
 	"sort"
 	"time"
 
+	"github.com/jplein/chatbot/serialize"
 	"github.com/jplein/chatbot/storage"
 )
 
 // Path relative to the root configuration directory where transcripts are
 // recorded
 const TranscriptsPath = "transcripts"
-
-type Role string
-
-const (
-	System    Role = "system"
-	User      Role = "user"
-	Assistant Role = "assistant"
-)
-
-type Record struct {
-	Role    Role   `json:"role"`
-	Content string `json:"content"`
-}
 
 func getTranscriptsDir(dir *storage.Dir, id int) string {
 	return filepath.Join(
@@ -36,10 +24,10 @@ func getTranscriptsDir(dir *storage.Dir, id int) string {
 	)
 }
 
-func Read(dir *storage.Dir, id int) ([]Record, error) {
+func Read(dir *storage.Dir, id int) ([]serialize.Record, error) {
 	var err error
 
-	records := make([]Record, 0)
+	records := make([]serialize.Record, 0)
 
 	storageDir := dir.Path
 	if storageDir == "" {
@@ -78,7 +66,7 @@ func Read(dir *storage.Dir, id int) ([]Record, error) {
 			return nil, err
 		}
 
-		var record Record
+		var record serialize.Record
 		if err = json.Unmarshal(buf, &record); err != nil {
 			return nil, err
 		}
@@ -89,7 +77,7 @@ func Read(dir *storage.Dir, id int) ([]Record, error) {
 	return records, nil
 }
 
-func Write(dir *storage.Dir, id int, r Record) error {
+func Write(dir *storage.Dir, id int, r serialize.Record) error {
 	var err error
 
 	t := time.Now().UnixMicro()
