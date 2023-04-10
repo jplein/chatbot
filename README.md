@@ -1,6 +1,8 @@
 # Chatbot
 
-A quick and dirty UI to GPT 3.5.
+A quick and dirty UI for OpenAI's `gpt-3.5-turbo` model, the same model used by [ChatGPT](https://openai.com/blog/chatgpt).
+
+This tool is in a very early stage of development. Expect the configuration-file format and the CLI parameters to change quite a bit in the future.
 
 ## Installation
 
