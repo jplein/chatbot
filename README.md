@@ -4,6 +4,8 @@ A quick and dirty command-line client for OpenAI's `gpt-3.5-turbo` model, the sa
 
 This tool is in a very early stage of development. Expect the configuration-file format and the CLI parameters to change quite a bit in the future.
 
+This software is covered under the [MIT license](LICENSE.txt).
+
 ## Installation
 
 Install [Go](https://go.dev/doc/install).
@@ -20,7 +22,9 @@ This tool will work on macOS and Linux. I haven't tested it on Windows.
 
 ## Get your OpenAI token
 
-You can get your OpenAI token from [the OpenAI API Keys page](https://platform.openai.com/account/api-keys). You'll need to make your OpenAI account a paid amount. Each time you use the API, including when you use this tool, it will cost a small amount.
+You can get your OpenAI token from [the OpenAI API Keys page](https://platform.openai.com/account/api-keys). You'll need to make your OpenAI account a paid amount. 
+
+EACH TIME YOU USE THE API, INCLUDING WHEN YOU USE THIS TOOL, OPENAI WILL CHARGE YOU MONEY. For details, see [OpenAI's pricing page](https://openai.com/pricing). The model used by this tool is `gpt-3.5-turbo`, currently hard-coded but with the ability to choose a model planned for a future version.
 
 ## Store your API key
 
