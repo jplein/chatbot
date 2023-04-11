@@ -13,7 +13,7 @@ Install [Go](https://go.dev/doc/install).
 Run this command:
 
 ```
-go install 'github.com/jplein/chatbot@latest'
+go install 'github.com/jplein/chatbot@v0.0.2'
 ```
 
 ## System requirements
