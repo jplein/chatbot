@@ -28,13 +28,25 @@ EACH TIME YOU USE THE API, INCLUDING WHEN YOU USE THIS TOOL, OPENAI WILL CHARGE 
 
 ## Store your API key
 
-Make a directory named `.chatbot` in your home directory. Edit the file `config.json` to look like this:
+Make a directory named `.chatbot` in your home directory. Edit the file `~/.chatbot/config.json` to look like this:
 
 ```
 {"api_key":"your API key here"}
 ```
 
 Replace "your API key here" with your API key.
+
+You can also track the token usage of each message to the OpenAI API by setting the `log_token_usage` property to `true`, like this:
+
+```
+{"api_key":"your API key here", "log_token_usage": true}
+```
+
+This will add a message like this to the end of each response:
+
+```
+(tokens used: 1039)
+```
 
 ## Ask a question
 

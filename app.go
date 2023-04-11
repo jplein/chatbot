@@ -34,9 +34,14 @@ func main() {
 	msg := strings.Join(os.Args[1:], " ")
 
 	var response string
-	if response, err = chat.Send(&dir, c.APIKey, msg); err != nil {
+	var tokenUsage int
+	if response, tokenUsage, err = chat.Send(&dir, c.APIKey, msg); err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Printf("%s\n", response)
+
+	if c.LogTokenUsage {
+		fmt.Printf("(tokens used: %d)\n", tokenUsage)
+	}
 }

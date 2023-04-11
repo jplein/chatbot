@@ -16,7 +16,8 @@ const DefaultConfigPath = "config.json"
 const DefaultConfigFilePermissions = 0644
 
 type Config struct {
-	APIKey string `json:"api_key"`
+	APIKey        string `json:"api_key"`
+	LogTokenUsage bool   `json:"log_token_usage"`
 }
 
 type File struct {

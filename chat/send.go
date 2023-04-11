@@ -19,13 +19,13 @@ const ChatEndpoint = "https://api.openai.com/v1/chat/completions"
 // const ChatEndpoint = "http://127.0.0.1:8080/"
 const DefaultChatModel = "gpt-3.5-turbo"
 
-func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
+func Send(dir *storage.Dir, apiKey string, msg string) (string, int, error) {
 	var err error
 	var parentPID int = os.Getppid()
 
 	question := serialize.Record{Role: serialize.User, Content: msg}
 	if err = transcript.Write(dir, parentPID, question); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	var req http.Request
@@ -37,12 +37,12 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 
 	var uri *url.URL
 	if uri, err = url.Parse(ChatEndpoint); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	var context []serialize.Record
 	if context, err = transcript.Read(dir, parentPID); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	req.URL = uri
@@ -65,7 +65,7 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 
 	var payloadBuf []byte
 	if payloadBuf, err = json.Marshal(payload); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	req.Body = io.NopCloser(strings.NewReader(string(payloadBuf)))
@@ -73,34 +73,34 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, error) {
 	client := &http.Client{}
 	var res *http.Response
 	if res, err = client.Do(&req); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	defer res.Body.Close()
 
 	var body []byte
 	if body, err = io.ReadAll(res.Body); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	if res.StatusCode != 200 {
-		return "", fmt.Errorf("unexpected status code %d: %s", res.StatusCode, body)
+		return "", 0, fmt.Errorf("unexpected status code %d: %s", res.StatusCode, body)
 	}
 
 	var chatResponse serialize.ChatResponse
 	if err = json.Unmarshal(body, &chatResponse); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
 	if chatResponse.Choices == nil || len(chatResponse.Choices) == 0 {
-		return "", fmt.Errorf("no choices in response from chat API")
+		return "", 0, fmt.Errorf("no choices in response from chat API")
 	}
 
 	responseChoice := chatResponse.Choices[0]
 
 	if err = transcript.Write(dir, parentPID, responseChoice.Message); err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return responseChoice.Message.Content, nil
+	return responseChoice.Message.Content, chatResponse.Usage.TotalTokens, nil
 }
