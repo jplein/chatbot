@@ -19,7 +19,7 @@ const ChatEndpoint = "https://api.openai.com/v1/chat/completions"
 // const ChatEndpoint = "http://127.0.0.1:8080/"
 const DefaultChatModel = "gpt-3.5-turbo"
 
-func Send(dir *storage.Dir, apiKey string, msg string) (string, int, error) {
+func Send(dir *storage.Dir, apiKey string, msg string, model string) (string, int, error) {
 	var err error
 	var parentPID int = os.Getppid()
 
@@ -48,12 +48,10 @@ func Send(dir *storage.Dir, apiKey string, msg string) (string, int, error) {
 	req.URL = uri
 
 	payload := serialize.ChatPayload{
-		Model: DefaultChatModel,
+		Model: model,
 	}
 
-	for _, record := range context {
-		payload.Messages = append(payload.Messages, record)
-	}
+	payload.Messages = append(payload.Messages, context...)
 
 	payload.Messages = append(
 		payload.Messages,

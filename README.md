@@ -48,6 +48,14 @@ This will add a message like this to the end of each response:
 (tokens used: 1039)
 ```
 
+You may also choose a model. The default model is `gpt-3.5-turbo`. To use `gpt-3.5-turbo-16k`:
+
+```
+{"api_key":"your API key here", "model": "gpt-3.5-turbo-16k"}
+```
+
+Or one of the other models. See [the OpenAI Models documentation](https://platform.openai.com/docs/models) and the [model endpoint documentation](https://platform.openai.com/docs/models/model-endpoint-compatibility).
+
 ## Ask a question
 
 ```

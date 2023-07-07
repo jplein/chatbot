@@ -30,12 +30,15 @@ func main() {
 	if c, err = f.Read(); err != nil {
 		log.Fatal(err)
 	}
+	if c.Model == "" {
+		c.Model = chat.DefaultChatModel
+	}
 
 	msg := strings.Join(os.Args[1:], " ")
 
 	var response string
 	var tokenUsage int
-	if response, tokenUsage, err = chat.Send(&dir, c.APIKey, msg); err != nil {
+	if response, tokenUsage, err = chat.Send(&dir, c.APIKey, msg, c.Model); err != nil {
 		log.Fatal(err)
 	}
 

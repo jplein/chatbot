@@ -18,6 +18,7 @@ const DefaultConfigFilePermissions = 0644
 type Config struct {
 	APIKey        string `json:"api_key"`
 	LogTokenUsage bool   `json:"log_token_usage"`
+	Model         string `json:"model"`
 }
 
 type File struct {
